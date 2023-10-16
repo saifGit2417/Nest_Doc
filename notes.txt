@@ -1,2 +1,6 @@
 get call -params
 post call -body object
+
+
+pipe - it do validation before going to routes - for e.g it check the data type of incoming params or body
+guards -- work as to provide authorization to the router we are trying to hit , allows to protect routes

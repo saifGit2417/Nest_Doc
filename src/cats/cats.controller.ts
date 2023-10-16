@@ -8,27 +8,52 @@ import {
   BadRequestException,
   Redirect,
   Param,
+  HttpException,
+  HttpStatus,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { CreateCat } from './dtos/create-cat.dto';
 import { CatsService } from './cats.service';
 import { Cat } from './interfaces/cat.interface';
-import { Cats } from './entities/cats.entity';
+// import { Cats } from './entities/cats.entity';
 import { Repository } from 'typeorm/repository/Repository';
-import { InjectRepository } from '@nestjs/typeorm';
-
+// import { InjectRepository } from '@nestjs/typeorm';
 
 @Controller('cats')
 export class CatsController {
-  @InjectRepository(Cats)
-  constructor(private catService: CatsService,
-    private readonly catsREpository: Repository<Cats>
-    
-    ) {}
+  // @InjectRepository(Cats)
+  constructor(
+    private catService: CatsService, // private readonly catsREpository: Repository<Cats>,
+  ) {}
 
   @Get()
   //   @HttpCode(220) //we can give custom status code to particular request
   async findAll(): Promise<Cat[]> {
-    return this.catService.findAll();
+    try {
+      return this.catService.findAll();
+    } catch (error) {
+      throw new HttpException(
+        {
+          status: HttpStatus.FORBIDDEN,
+          error: 'This is a custom exception filter',
+        },
+        HttpStatus.FORBIDDEN,
+        {
+          cause: error,
+        },
+      );
+    }
+  }
+
+  // if number is not passed then below response
+  //   {
+  //     "message": "Validation failed (numeric string is expected)",
+  //     "error": "Bad Request",
+  //     "statusCode": 400
+  // }
+  @Get(':id')
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.catService.findOne(id);
   }
 
   @Post()

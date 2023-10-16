@@ -10,7 +10,7 @@ by this we can make this module globally accesable across repo
 but its not good practice to make every module global , use of imports array is good normally
 */
 @Module({
-  imports: [TypeOrmModule.forFeature([Cats])],
+  // imports: [TypeOrmModule.forFeature([Cats])],
   controllers: [CatsController],
   providers: [CatsService],
   exports: [CatsService],
